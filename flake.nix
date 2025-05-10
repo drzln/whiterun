@@ -1,3 +1,4 @@
+# flake.nix
 {
   description = "🏰 Whiterun — Declarative KVM-VM launcher in Zig";
   inputs = {
