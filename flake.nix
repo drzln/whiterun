@@ -45,8 +45,8 @@
 
         devShells.default = pkgs.mkShell {
           buildInputs = [
-              pkgs.zig
-            ];
+            pkgs.zig
+          ];
         };
       };
     };
