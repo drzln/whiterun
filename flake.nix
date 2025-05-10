@@ -1,5 +1,5 @@
 {
-  description = "🏰 Whiterun — Declarative KVM-VM launcher in Zig (Zig 0.13.0)";
+  description = "🏰 Whiterun — Declarative KVM-VM launcher (Zig 0.13.0)";
 
   inputs = {
     nixpkgs     .url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -8,13 +8,12 @@
     zig2nix     .url = "github:Cloudef/zig2nix";
   };
 
-  # bind whole inputs set so we can reference `inputs.nixpkgs` later
   outputs = inputs @ {
     # self,
     flake-utils,
     flake-parts,
-    zig2nix,
     # nixpkgs,
+    zig2nix,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -25,49 +24,47 @@
         pkgs,
         ...
       }: let
-        ####################################################################
-        # 1. pick the Zig 0.13.0 compiler from zig2nix
-        ####################################################################
+        ############################################################
+        # 1. Pick the Zig 0.13.0 compiler provided by zig2nix
+        ############################################################
         zigCompiler = zig2nix.packages.${system}.zig-0_13_0;
 
-        ####################################################################
-        # 2. create a zig-env for *this* system
-        #    • nixpkgs  → full flake output (inputs.nixpkgs)
-        #    • zig      → compiler we just picked
-        ####################################################################
+        ############################################################
+        # 2. Create a zig-env for THIS system
+        ############################################################
         zigEnv = zig2nix."zig-env".${system} {
-          nixpkgs = inputs.nixpkgs; # must be the flake output, not `pkgs`
-          zig = zigCompiler;
+          nixpkgs = inputs.nixpkgs; # full nixpkgs flake output
+          zig = zigCompiler; # pin compiler
         };
 
-        ####################################################################
-        # 3. build the project (auto-detects build.zig & .zon/lock)
-        ####################################################################
-        whiterun = zigEnv.package {src = pkgs.lib.cleanSource ./.;};
+        ############################################################
+        # 3. Build Whiterun (pname + version are REQUIRED)
+        ############################################################
+        whiterun = zigEnv.package {
+          pname = "whiterun";
+          version = "0.1.0";
+          src = pkgs.lib.cleanSource ./.;
+        };
       in {
-        ###########################
-        ## Packages & runnable app
-        ###########################
-        # packages = {
-        #   whiterun = whiterun;
-        #   default = whiterun; # nix build .   /   nix run .
-        # };
+        ########################
+        ## Packages & app
+        ########################
+        packages.whiterun = whiterun;
+        packages.default = whiterun; # nix build .   /   nix run .
 
-        # apps.run = {
-        #   type = "app";
-        #   program = "${whiterun}/bin/whiterun";
-        # };
+        apps.run = {
+          type = "app";
+          program = "${whiterun}/bin/whiterun";
+        };
 
-        ###########################
-        ## Dev shell (direnv / nix develop)
-        ##  • brings in Zig 0.13 and the CLI
-        ###########################
-        devShells.default = zigEnv.mkShell {
+        ########################
+        ## Dev shell
+        ########################
+        devShells.default = pkgs.mkShell {
           buildInputs = [
-              whiterun
-              zigCompiler
-            ]; # CLI on PATH
-          # zigEnv.mkShell already adds the `zig` compiler
+            zigCompiler # Zig 0.13 compiler in shell
+            whiterun # CLI on PATH
+          ];
         };
       };
     };
