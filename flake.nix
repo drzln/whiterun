@@ -44,7 +44,9 @@
         # defaultPackage = self.packages.${system}.whiterun;
 
         devShells.default = pkgs.mkShell {
-          buildInputs = [pkgs.zig];
+          buildInputs = [
+              pkgs.zig
+            ];
         };
       };
     };
