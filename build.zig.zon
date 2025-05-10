@@ -2,7 +2,6 @@
 .{
     .name = "whiterun",
     .version = "0.1.0",
-
     .dependencies = .{
         .zrpc = .{
             .url = "https://github.com/malcolmstill/zrpc/archive/refs/heads/main.tar.gz",
