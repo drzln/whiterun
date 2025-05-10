@@ -8,29 +8,25 @@
     zig2nix     .url = "github:Cloudef/zig2nix";
   };
 
-  outputs = {
+  # NOTE: we bind the whole inputs set as `inputs@{ … }`
+  outputs = inputs @ {
     flake-utils,
     flake-parts,
     zig2nix,
     ...
   }:
-    flake-parts.lib.mkFlake {} {
+  # and pass it straight through to mkFlake
+    flake-parts.lib.mkFlake {inherit inputs;} {
       systems = flake-utils.lib.defaultSystems;
 
       perSystem = {
         system,
-        # pkgs,
+        pkgs,
         ...
       }: let
-        # ←── pick the helper for THIS system (no function call)
-        zigEnv = zig2nix."zig-env".${system};
-
-        # build the project (auto-detects build.zig + *.zon/lock)
-        whiterun = zigEnv.package {src = ./.;};
+        zigEnv = zig2nix."zig-env".${system}; # per-system helper
+        whiterun = zigEnv.package {src = ./.;}; # builds via zig build
       in {
-        ########################################
-        ## Standard flake outputs for this system
-        ########################################
         packages = {
           whiterun = whiterun;
           default = whiterun; # nix build .   /   nix run .
