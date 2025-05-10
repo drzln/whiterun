@@ -1,5 +1,3 @@
-# flake.nix
-# flake.nix  —  Whiterun (Zig) + zig2nix + flake-parts
 {
   description = "🏰 Whiterun — Declarative KVM-VM launcher in Zig";
 
@@ -10,52 +8,40 @@
     zig2nix     .url = "github:Cloudef/zig2nix";
   };
 
-  outputs = inputs @ {
+  outputs = {
     flake-utils,
     flake-parts,
     zig2nix,
     ...
   }:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+    flake-parts.lib.mkFlake {} {
       systems = flake-utils.lib.defaultSystems;
 
       perSystem = {
         system,
-        pkgs,
+        # pkgs,
         ...
       }: let
-        # ────────────────────────────────────────────────
-        # Bring in the zig2nix helper for *this* system.
-        # `zig2nix` exports it as the attribute "zig-env".
-        # It returns an attr-set with .package, .mkShell, .zig, …
-        # ────────────────────────────────────────────────
-        zigEnv = zig2nix."zig-env" {nixpkgs = pkgs;};
+        # ←── pick the helper for THIS system (no function call)
+        zigEnv = zig2nix."zig-env".${system};
 
-        # Build the project (auto-detects build.zig & *.zon/lock).
-        whiterun = zigEnv.package {
-          src = ./.;
-          # You can add zigBuildFlags, zigTarget, etc. here later.
-        };
+        # build the project (auto-detects build.zig + *.zon/lock)
+        whiterun = zigEnv.package {src = ./.;};
       in {
         ########################################
         ## Standard flake outputs for this system
         ########################################
         packages = {
           whiterun = whiterun;
-          default = whiterun; # nix build .  /  nix run .
+          default = whiterun; # nix build .   /   nix run .
         };
 
-        apps = {
-          run = {
-            type = "app";
-            program = "${whiterun}/bin/whiterun";
-          };
+        apps.run = {
+          type = "app";
+          program = "${whiterun}/bin/whiterun";
         };
 
-        devShells.default = zigEnv.mkShell {
-          # nix develop
-          # add extra nativeBuildInputs / shellHook if you need them
-        };
+        devShells.default = zigEnv.mkShell {}; # nix develop
       };
     };
 }
