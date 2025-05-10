@@ -1,0 +1,7 @@
+{
+  .name = "whiterun",
+  .version = "0.1.0",
+  .root = ".",
+  .entry = "src/main.zig",
+  .dependencies = {},
+}
