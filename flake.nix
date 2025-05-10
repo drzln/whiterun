@@ -48,22 +48,25 @@
         ###########################
         ## Packages & runnable app
         ###########################
-        packages = {
-          whiterun = whiterun;
-          default = whiterun; # nix build .   /   nix run .
-        };
+        # packages = {
+        #   whiterun = whiterun;
+        #   default = whiterun; # nix build .   /   nix run .
+        # };
 
-        apps.run = {
-          type = "app";
-          program = "${whiterun}/bin/whiterun";
-        };
+        # apps.run = {
+        #   type = "app";
+        #   program = "${whiterun}/bin/whiterun";
+        # };
 
         ###########################
         ## Dev shell (direnv / nix develop)
         ##  • brings in Zig 0.13 and the CLI
         ###########################
         devShells.default = zigEnv.mkShell {
-          buildInputs = [whiterun]; # CLI on PATH
+          buildInputs = [
+              whiterun
+              zigCompiler
+            ]; # CLI on PATH
           # zigEnv.mkShell already adds the `zig` compiler
         };
       };
