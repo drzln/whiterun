@@ -3,7 +3,7 @@
   .version = "0.1.0",
   .root = ".",
   .entry = "src/main.zig",
-  .dependencies = {
+  .dependencies = .{
     .zrpc = .{
       .url = "https://github.com/malcolmstill/zrpc/archive/main.tar.gz",
       .hash = "1220e0b617447e7f5f5f6cc8e5dcf0bbd8bce6c79b0f0938d7eb6edc942fcd2826b3",
@@ -18,3 +18,4 @@
     },
   },
 }
+
