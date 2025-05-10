@@ -1,13 +1,11 @@
 {
   description = "🏰 Whiterun — Declarative KVM-VM launcher (Zig 0.13.0)";
-
   inputs = {
     nixpkgs     .url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils .url = "github:numtide/flake-utils";
     flake-parts .url = "github:hercules-ci/flake-parts";
     zig2nix     .url = "github:Cloudef/zig2nix";
   };
-
   outputs = inputs @ {
     flake-utils,
     flake-parts,
