@@ -1,21 +1,20 @@
-{
-  .name = "whiterun",
-  .version = "0.1.0",
-  .root = ".",
-  .entry = "src/main.zig",
-  .dependencies = .{
-    .zrpc = .{
-      .url = "https://github.com/malcolmstill/zrpc/archive/main.tar.gz",
-      .hash = "1220e0b617447e7f5f5f6cc8e5dcf0bbd8bce6c79b0f0938d7eb6edc942fcd2826b3",
-    },
-    .mach = .{
-      .url = "https://github.com/hexops/mach/archive/refs/heads/main.tar.gz",
-      .hash = "12204bbcb7d9e80b2be6d39a659c3606df2ab0b7c36947d8587a03bb3b56e3db14c3",
-    },
-    .clap = .{
-      .url = "https://github.com/clap-rs/zig-clap/archive/refs/heads/main.tar.gz",
-      .hash = "12208ea0a438c772e04530ffdc87b1d59cfb384bd9d8d1e7ab409a36a5d278ba3f2a",
-    },
-  },
-}
+// build.zig.zon  (minimal & valid)
+.{
+    .name = "whiterun",
+    .version = "0.1.0",
 
+    .dependencies = .{
+        .zrpc = .{
+            .url  = "https://github.com/malcolmstill/zrpc/archive/main.tar.gz",
+            .hash = "1220e0b617447e7f5f5f6cc8e5dcf0bbd8bce6c79b0f0938d7eb6edc942fcd2826b3",
+        },
+        .mach = .{
+            .url  = "https://github.com/hexops/mach/archive/refs/heads/main.tar.gz",
+            .hash = "12204bbcb7d9e80b2be6d39a659c3606df2ab0b7c36947d8587a03bb3b56e3db14c3",
+        },
+        .clap = .{
+            .url  = "https://github.com/clap-rs/zig-clap/archive/refs/heads/main.tar.gz",
+            .hash = "12208ea0a438c772e04530ffdc87b1d59cfb384bd9d8d1e7ab409a36a5d278ba3f2a",
+        },
+    },
+}
