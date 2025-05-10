@@ -8,6 +8,7 @@
     zig2nix     .url = "github:Cloudef/zig2nix";
   };
 
+  # `inputs@{ ... }` passes *each input’s outputs* into mkFlake
   outputs = inputs @ {
     self,
     flake-utils,
@@ -23,18 +24,18 @@
         pkgs,
         ...
       }: let
-        # ── zig2nix helper (pin Zig 0.13.0) ──────────────────────────
-        zigEnv = zig2nix.outputs."zig-env".${system} {
-          nixpkgs = pkgs; # correct parameter name
-          zig = pkgs.zig_0_13; # compiler version to use
+        # zig2nix helper for THIS system; pin the compiler to 0.13.0
+        zigEnv = zig2nix."zig-env".${system} {
+          nixpkgs = pkgs; # supply the current nixpkgs set
+          zig = pkgs.zig_0_13;
         };
 
         whiterun = zigEnv.package {src = ./.;};
       in {
-        # ── packages & runnable app ──────────────────────────────────
+        ################ Packages & app ################
         packages = {
           whiterun = whiterun;
-          default = whiterun;
+          default = whiterun; # nix build . / nix run .
         };
 
         apps.run = {
@@ -42,9 +43,9 @@
           program = "${whiterun}/bin/whiterun";
         };
 
-        # ── dev shell with Zig 0.13 + CLI on PATH ───────────────────
+        ################ Dev shell #####################
         devShells.default = zigEnv.mkShell {
-          buildInputs = [whiterun];
+          buildInputs = [whiterun]; # CLI on PATH in nix develop
         };
       };
     };
