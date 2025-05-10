@@ -14,7 +14,7 @@
     zig2nix,
     ...
   }:
-    flake-parts.lib.mkFlake {} {
+    flake-parts.lib.mkFlake {
       systems = flake-utils.lib.defaultSystems;
 
       perSystem = {
