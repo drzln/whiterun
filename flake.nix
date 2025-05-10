@@ -9,6 +9,7 @@
   };
 
   outputs = inputs @ {
+    self,
     flake-utils,
     flake-parts,
     zig2nix,
@@ -22,22 +23,18 @@
         pkgs,
         ...
       }: let
-        ################################################################
-        ## zig2nix helper – explicitly use Zig 0.13.0 from nixpkgs
-        ################################################################
+        # ── zig2nix helper (pin Zig 0.13.0) ──────────────────────────
         zigEnv = zig2nix.outputs."zig-env".${system} {
-          pkgs = pkgs; # pass the correct nixpkgs set
-          zig = pkgs.zig_0_13; # pin compiler to 0.13.0
+          nixpkgs = pkgs; # correct parameter name
+          zig = pkgs.zig_0_13; # compiler version to use
         };
 
         whiterun = zigEnv.package {src = ./.;};
       in {
-        ########################################
-        ## Packages & runnable app
-        ########################################
+        # ── packages & runnable app ──────────────────────────────────
         packages = {
           whiterun = whiterun;
-          default = whiterun; # nix build .   /   nix run .
+          default = whiterun;
         };
 
         apps.run = {
@@ -45,11 +42,9 @@
           program = "${whiterun}/bin/whiterun";
         };
 
-        ########################################
-        ## Dev shell with Zig 0.13 + CLI in PATH
-        ########################################
+        # ── dev shell with Zig 0.13 + CLI on PATH ───────────────────
         devShells.default = zigEnv.mkShell {
-          buildInputs = [whiterun]; # CLI available inside nix develop
+          buildInputs = [whiterun];
         };
       };
     };
