@@ -21,8 +21,8 @@
       }: let
         zigCompiler = zig2nix.packages.${system}.zig-0_13_0;
         zigEnv = zig2nix."zig-env".${system} {
-          nixpkgs = inputs.nixpkgs; # full nixpkgs flake output
-          zig = zigCompiler; # pin compiler
+          nixpkgs = inputs.nixpkgs;
+          zig = zigCompiler;
         };
         whiterun = zigEnv.package {
           pname = "whiterun";
